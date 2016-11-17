@@ -404,15 +404,15 @@ class BTreeVectorImpl
         int HALFSIZE = pn->node->halfBlockSize();
         // split
         structModCount++;
-        Node * newnode = new Node(pn->node->isLeaf);
-        move(pn->node, HALFSIZE, newnode, 0, pn->node->csize() - HALFSIZE, -1, nullptr);
+        Node * newNode = new Node(pn->node->isLeaf);
+        move(pn->node, HALFSIZE, newNode, 0, pn->node->csize() - HALFSIZE, -1, nullptr);
         if (pos < HALFSIZE)
             splitAdd(pn->node, pos, moveUpNode, element);
         else
         {
-            splitAdd(newnode, pos - HALFSIZE, moveUpNode, element);
+            splitAdd(newNode, pos - HALFSIZE, moveUpNode, element);
             int moveCount = pn->node->isLeaf ? 1 : moveUpNode->count;
-            newnode->count += moveCount;
+            newNode->count += moveCount;
             pn->node->count -= moveCount;
         }
         // root split
@@ -420,11 +420,11 @@ class BTreeVectorImpl
         {
             root = new Node(false);
             root->data.childrenNodes->add(pn->node);
-            root->data.childrenNodes->add(newnode);
-            root->count = pn->node->count + newnode->count;
+            root->data.childrenNodes->add(newNode);
+            root->count = pn->node->count + newNode->count;
             //printf("new root %p\n", root);
         }
-        return newnode;
+        return newNode;
     }
 
     bool mergeBlocksAfterDelete(Node * node, Node * parent, int myParentIdx)
