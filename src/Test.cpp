@@ -90,7 +90,23 @@ void atestspeed(int lmax)
 
     dspElapsed("insert in the middle ", tstart1);
 
-    auto tstart2 = std::chrono::system_clock::now();
+    //---------------
+    bta.clear();
+
+    tstart1 = std::chrono::system_clock::now();
+
+    for (int i = 0; i < lmax; i++)
+    {
+        eval = toVal(i * 2);
+        int pos = std::rand() % (bta.size() + 1);
+        //printf("\npos %i\n",pos);
+        bta.add(pos, eval);
+    }
+
+    dspElapsed("insert at random pos ", tstart1);
+
+    //--------------
+    tstart1 = std::chrono::system_clock::now();
 
     for (int i = 0; i < lmax; i++)
     {
@@ -99,7 +115,21 @@ void atestspeed(int lmax)
     }
     eval = toVal(0);
 
-    dspElapsed("get   ", tstart2);
+    dspElapsed("get iteration  ", tstart1);
+
+    //--------------
+    tstart1 = std::chrono::system_clock::now();
+
+    for (int i = 0; i < lmax; i++)
+    {
+        int pos = std::rand() % (bta.size() + 1);
+        if (pos >= (int)bta.size())
+            pos = 0;
+        eval = bta.get(pos);
+    }
+    eval = toVal(0);
+
+    dspElapsed("get random pos ", tstart1);
 
     for (int t = 0; t <= 2; t++)
     {
@@ -108,13 +138,13 @@ void atestspeed(int lmax)
         for (int i = 0; i < lmax; i++)
         {
             eval = toVal(i * 2);
-            bta.add(i / 2, eval);
+            int pos = i / 2;
+            bta.add(pos, eval);
 
         }
 
-        tstart2 = std::chrono::system_clock::now();
 
-        auto tstart3 = std::chrono::system_clock::now();
+        tstart1 = std::chrono::system_clock::now();
 
         for (int i = 0; i < lmax; i++)
         {
@@ -124,14 +154,18 @@ void atestspeed(int lmax)
             if (t == 1)
                 pos = 0;
             if (t == 2)
-                pos = bta.size() / 2;
+            {
+                //pos = bta.size() / 2;
+                pos = std::rand() % (bta.size() + 1);
+                if (pos >= (int)bta.size())
+                    pos = 0;
+            }
             bta.remove(pos);
 
         }
         char buf[256];
-        sprintf(buf, "remove at %s", t == 0 ? "END" : t == 1 ? "0  " : "MID");
-        dspElapsed(buf, tstart3);
-        //dspElapsed("total*", tstart1);
+        sprintf(buf, "remove at %s", t == 0 ? "end       " : t == 1 ? "0         " : "random pos");
+        dspElapsed(buf, tstart1);
     }
 
 }
